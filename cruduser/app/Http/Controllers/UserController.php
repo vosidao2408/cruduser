@@ -84,11 +84,18 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        $exist = User::where('email',$request->email)->exists();
         $id = $user->id;
+        if($exist){
+            return redirect('users/'.$id.'/edit')->with('status', 'Mail already exists! Please use another email');
+        }
+        else{        
         User::where('id',$id)->update([
-            'name'=>$request->name
+            'name'=>$request->name,
+            'email'=>$request->email
         ]);
         return redirect()->route('users.show',$user);
+    }
     }
 
     /**
